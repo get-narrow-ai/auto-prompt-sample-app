@@ -1,12 +1,13 @@
 "use client";
 
 import { useChat } from "ai/react";
+import { Textarea } from "@nextui-org/react";
 
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
   return (
-    <div className="flex flex-col w-full max-w-md py-24 mx-auto">
-      {messages.map((m) => (
+    <div className="flex flex-col w-full max-w-xl py-24 mx-auto">
+      {messages.map((m: any) => (
         <div key={m.id} className="whitespace-pre-wrap">
           {m.role === "user" ? "User: " : "AI: "}
           {m.content}
@@ -14,10 +15,11 @@ export default function Chat() {
       ))}
 
       <form onSubmit={handleSubmit}>
-        <input
-          className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-xl"
+        <Textarea
+          label="Prompt"
+          className="fixed top-0 w-full max-w-md mt-8"
           value={input}
-          placeholder="Say something..."
+          placeholder="What do you want to do?"
           onChange={handleInputChange}
         />
       </form>
