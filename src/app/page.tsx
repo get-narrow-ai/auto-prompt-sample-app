@@ -88,6 +88,7 @@ ${context}`
         <Button
           radius="sm"
           size="sm"
+          isDisabled={!input.length}
           className="mt-4 hover:cursor-pointer"
           onClick={() => {
             setMessages([]);
