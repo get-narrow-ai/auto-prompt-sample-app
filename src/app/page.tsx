@@ -1,15 +1,10 @@
 "use client";
 
 import { useChat } from "ai/react";
-import {
-  Textarea,
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  Divider,
-} from "@nextui-org/react";
+import { Textarea, Button } from "@nextui-org/react";
 import { useEffect, useRef, useState } from "react";
+import AiResponse from "./AiResponse";
+import UserMessage from "./UserMessage";
 
 export default function Index() {
   const [context, setContext] = useState("");
@@ -98,27 +93,20 @@ ${context}`
             onPromptSubmit(input, context);
           }}
         >
-          Run
+          Test
         </Button>
       </form>
       <div className="mt-4">
         {messages.length ? (
           <h2 className="font-bold text-sm">Response</h2>
         ) : null}
-        {messages.map((m) => (
-          <Card key={m.id} className="whitespace-pre-wrap mt-2">
-            <CardBody>
-              <p>{m.content}</p>
-            </CardBody>
-            <Divider />
-            <CardFooter>
-              <p className="text-xs">
-                {m.role === "user" ? "You" : "LLM"} -{" "}
-                {m.createdAt?.toLocaleString() || "now"}
-              </p>
-            </CardFooter>
-          </Card>
-        ))}
+        {messages.map((m) =>
+          m.role === "user" ? (
+            <UserMessage key={m.id} message={m} />
+          ) : (
+            <AiResponse key={m.id} message={m} />
+          )
+        )}
       </div>
     </div>
   );
