@@ -1,8 +1,15 @@
 "use client";
 
 import { useChat } from "ai/react";
-import { Textarea, Button } from "@nextui-org/react";
-import { useEffect, useRef } from "react";
+import {
+  Textarea,
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  Divider,
+} from "@nextui-org/react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Index() {
   const { messages, input, handleInputChange, append, setMessages } = useChat();
@@ -49,7 +56,7 @@ export default function Index() {
     <div className="flex flex-col w-full max-w-md py-24 mx-auto">
       <h1 className="font-bold text-inherit">Auto-Prompt Sample Application</h1>
       <p className="text-sm">
-        Use the field below to provide a task to our system.
+        Use the fields below to provide a task and context to our system.
       </p>
       <form className="mt-4 w-full max-w-md">
         <Textarea
@@ -69,10 +76,18 @@ export default function Index() {
       </form>
       <div className="mt-4">
         {messages.map((m) => (
-          <div key={m.id} className="whitespace-pre-wrap">
-            {m.role === "user" ? "User: " : "AI: "}
-            {m.content}
-          </div>
+          <Card key={m.id} className="whitespace-pre-wrap mt-2">
+            <CardBody>
+              <p>{m.content}</p>
+            </CardBody>
+            <Divider />
+            <CardFooter>
+              <p className="text-xs">
+                {m.role === "user" ? "You" : "LLM"} -{" "}
+                {m.createdAt?.toLocaleString() || "now"}
+              </p>
+            </CardFooter>
+          </Card>
         ))}
       </div>
     </div>
