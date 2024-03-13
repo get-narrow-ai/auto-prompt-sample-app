@@ -12,31 +12,47 @@ import {
 import { useEffect, useRef, useState } from "react";
 
 export default function Index() {
+  const [context, setContext] = useState("");
+
   const { messages, input, handleInputChange, append, setMessages } = useChat();
 
   // Submit prompt to execute on the server:
-  const onPromptSubmit = (clear: boolean, input: string) => {
+  const onPromptSubmit = (clear: boolean, input: string, context?: string) => {
     if (clear) {
       setMessages([]);
     }
+
+    if (!input.length) {
+      return;
+    }
+
+    const content = context
+      ? `${input}
+
+# CONTEXT:
+${context}`
+      : input;
+
     append({
       createdAt: new Date(),
       role: "user",
-      content: input,
+      content,
     });
   };
 
   // Use a ref to store the state of the chat so that it can be accessed within our useEffect hook:
-  const stateRef = useRef<{ input: string; messages: any[] }>({
+  const stateRef = useRef<{ input: string; messages: any[]; context: string }>({
     input,
     messages,
+    context,
   });
   useEffect(() => {
     stateRef.current = {
       input,
       messages,
+      context,
     };
-  }, [input, messages]);
+  }, [input, messages, context]);
 
   // Listen for the enter key to submit the prompt:
   useEffect(() => {
@@ -44,7 +60,7 @@ export default function Index() {
       const { messages, input } = stateRef.current;
       if (e.key === "Enter" && messages.length === 0 && input) {
         e.preventDefault();
-        onPromptSubmit(false, input);
+        onPromptSubmit(false, input, context);
       }
     };
 
@@ -60,16 +76,24 @@ export default function Index() {
       </p>
       <form className="mt-4 w-full max-w-md">
         <Textarea
+          isRequired
           value={input}
           label="Prompt"
           placeholder="What do you want to do?"
           onChange={handleInputChange}
         />
+        <Textarea
+          className="mt-4 border-gray-200 focus:border-[#3170f9]"
+          value={context}
+          label="Context"
+          placeholder="What context do I get to use?"
+          onChange={(e) => setContext(e.target.value)}
+        />
         <Button
           radius="sm"
           size="sm"
           className="mt-4 hover:cursor-pointer"
-          onClick={() => onPromptSubmit(true, input)}
+          onClick={() => onPromptSubmit(true, input, context)}
         >
           Run
         </Button>
