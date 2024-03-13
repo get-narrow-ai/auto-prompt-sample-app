@@ -66,16 +66,19 @@ ${context}`
 
   return (
     <div className="flex flex-col w-full max-w-md py-24 mx-auto">
-      <h1 className="font-bold text-inherit">Auto-Prompt Sample Application</h1>
+      <h1 className="font-bold text-xl">Auto-Prompt Sample Application</h1>
       <p className="text-sm">
         Use the fields below to provide a task and context to our system.
       </p>
+
       <form className="mt-4 w-full max-w-md">
+        <h2 className="font-bold text-sm">Setup</h2>
         <Textarea
           isRequired
           value={input}
           label="Prompt"
           placeholder="What do you want to do?"
+          className="mt-2"
           onChange={handleInputChange}
         />
         <Textarea
@@ -99,6 +102,9 @@ ${context}`
         </Button>
       </form>
       <div className="mt-4">
+        {messages.length ? (
+          <h2 className="font-bold text-sm">Response</h2>
+        ) : null}
         {messages.map((m) => (
           <Card key={m.id} className="whitespace-pre-wrap mt-2">
             <CardBody>
