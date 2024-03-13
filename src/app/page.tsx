@@ -17,11 +17,7 @@ export default function Index() {
   const { messages, input, handleInputChange, append, setMessages } = useChat();
 
   // Submit prompt to execute on the server:
-  const onPromptSubmit = (clear: boolean, input: string, context?: string) => {
-    if (clear) {
-      setMessages([]);
-    }
-
+  const onPromptSubmit = (input: string, context?: string) => {
     if (!input.length) {
       return;
     }
@@ -60,7 +56,7 @@ ${context}`
       const { messages, input } = stateRef.current;
       if (e.key === "Enter" && messages.length === 0 && input) {
         e.preventDefault();
-        onPromptSubmit(false, input, context);
+        onPromptSubmit(input, context);
       }
     };
 
@@ -93,7 +89,10 @@ ${context}`
           radius="sm"
           size="sm"
           className="mt-4 hover:cursor-pointer"
-          onClick={() => onPromptSubmit(true, input, context)}
+          onClick={() => {
+            setMessages([]);
+            onPromptSubmit(input, context);
+          }}
         >
           Run
         </Button>
