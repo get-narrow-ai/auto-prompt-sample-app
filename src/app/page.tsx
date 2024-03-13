@@ -6,10 +6,33 @@ import { useEffect, useRef, useState } from "react";
 import AiResponse from "./AiResponse";
 import UserMessage from "./UserMessage";
 
+const callImprovementApi = async ({ prompt, context, setPrompt }: any) => {
+  const response = await fetch(process.env.NEXT_PUBLIC_IMPROVE_API_URL || "", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.NEXT_PUBLIC_CODETHREAD_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ prompt, context }),
+  });
+  let content = "";
+  const decoder = new TextDecoder();
+  const reader = response.body!.getReader();
+  let result = await reader.read();
+  while (!result.done) {
+    const chunk = result.value;
+    const decodedValue = decoder.decode(chunk);
+    content += decodedValue;
+    setPrompt(content);
+    result = await reader.read();
+  }
+};
+
 export default function Index() {
   const [context, setContext] = useState("");
 
-  const { messages, input, handleInputChange, append, setMessages } = useChat();
+  const { messages, input, handleInputChange, append, setMessages, setInput } =
+    useChat();
 
   // Submit prompt to execute on the server:
   const onPromptSubmit = (input: string, context?: string) => {
@@ -72,6 +95,7 @@ ${context}`
           isRequired
           value={input}
           label="Prompt"
+          maxRows={Infinity}
           placeholder="What do you want to do?"
           className="mt-2"
           onChange={handleInputChange}
@@ -80,7 +104,7 @@ ${context}`
           className="mt-4 border-gray-200 focus:border-[#3170f9]"
           value={context}
           label="Context"
-          placeholder="What context do I get to use?"
+          placeholder="Give an example of the context you would use"
           onChange={(e) => setContext(e.target.value)}
         />
         <Button
@@ -94,6 +118,18 @@ ${context}`
           }}
         >
           Test
+        </Button>
+        <Button
+          radius="sm"
+          size="sm"
+          variant="bordered"
+          isDisabled={!input.length}
+          className="mt-4 ml-2 hover:cursor-pointer"
+          onClick={() => {
+            callImprovementApi({ prompt: input, context, setPrompt: setInput });
+          }}
+        >
+          Improve
         </Button>
       </form>
       <div className="mt-4">
