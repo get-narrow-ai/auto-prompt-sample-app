@@ -1,37 +1,11 @@
 "use client";
 
 import { useChat } from "ai/react";
-import {
-  Textarea,
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  Divider,
-} from "@nextui-org/react";
+import { Textarea, Button } from "@nextui-org/react";
 import { useEffect, useRef, useState } from "react";
-
-const callImprovementApi = async ({ prompt, context, setPrompt }: any) => {
-  const response = await fetch(process.env.NEXT_PUBLIC_IMPROVE_API_URL || "", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.NEXT_PUBLIC_CODETHREAD_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ prompt, context }),
-  });
-  let content = "";
-  const decoder = new TextDecoder();
-  const reader = response.body!.getReader();
-  let result = await reader.read();
-  while (!result.done) {
-    const chunk = result.value;
-    const decodedValue = decoder.decode(chunk);
-    content += decodedValue;
-    setPrompt(content);
-    result = await reader.read();
-  }
-};
+import AiResponse from "./AiResponse";
+import UserMessage from "./UserMessage";
+import { callImprovementApi, callTrainingApi } from "./apiClient";
 
 export default function Index() {
   const [context, setContext] = useState("");
@@ -59,6 +33,18 @@ ${context}`
     });
   };
 
+  const onTrain = async (generation: string, correction: string) => {
+    const response = await callTrainingApi({
+      prompt: input,
+      context,
+      generation,
+      correction,
+    });
+    setInput(response.prompt[0].content);
+    setMessages([]);
+    onPromptSubmit(response.prompt[0].content, context);
+  };
+
   // Use a ref to store the state of the chat so that it can be accessed within our useEffect hook:
   const stateRef = useRef<{ input: string; messages: any[]; context: string }>({
     input,
@@ -83,18 +69,18 @@ ${context}`
       }
     };
 
-    window.addEventListener("keypress", onKeypress);
+    // window.addEventListener("keypress", onKeypress);
     return () => window.removeEventListener("keypress", onKeypress);
   }, []);
 
   return (
-    <div className="flex flex-col w-full max-w-md py-24 mx-auto">
+    <div className="flex flex-col w-full max-w-2xl py-24 mx-auto">
       <h1 className="font-bold text-xl">Auto-Prompt Sample Application</h1>
       <p className="text-sm">
         Use the fields below to provide a task and context to our system.
       </p>
 
-      <form className="mt-4 w-full max-w-md">
+      <form className="mt-4 w-full">
         <h2 className="font-bold text-sm">Setup</h2>
         <Textarea
           isRequired
@@ -122,7 +108,7 @@ ${context}`
             onPromptSubmit(input, context);
           }}
         >
-          Run
+          Test
         </Button>
         <Button
           radius="sm"
@@ -141,20 +127,13 @@ ${context}`
         {messages.length ? (
           <h2 className="font-bold text-sm">Response</h2>
         ) : null}
-        {messages.map((m) => (
-          <Card key={m.id} className="whitespace-pre-wrap mt-2">
-            <CardBody>
-              <p>{m.content}</p>
-            </CardBody>
-            <Divider />
-            <CardFooter>
-              <p className="text-xs">
-                {m.role === "user" ? "You" : "LLM"} -{" "}
-                {m.createdAt?.toLocaleString() || "now"}
-              </p>
-            </CardFooter>
-          </Card>
-        ))}
+        {messages.map((m) =>
+          m.role === "user" ? (
+            <UserMessage key={m.id} message={m} />
+          ) : (
+            <AiResponse key={m.content} message={m} onTrain={onTrain} />
+          )
+        )}
       </div>
     </div>
   );
