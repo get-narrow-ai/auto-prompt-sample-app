@@ -128,9 +128,7 @@ ${context}`
           <h2 className="font-bold text-sm">Response</h2>
         ) : null}
         {messages.map((m) =>
-          m.role === "user" ? (
-            <UserMessage key={m.id} message={m} />
-          ) : (
+          m.role === "user" ? null : (
             <AiResponse key={m.content} message={m} onTrain={onTrain} />
           )
         )}
