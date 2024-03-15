@@ -6,9 +6,16 @@ import {
   Divider,
   Spinner,
 } from "@nextui-org/react";
+import { Message } from "ai/react";
 import { useState, useCallback } from "react";
 
-const AiResponse = ({ message, onTrain }: any) => {
+const AiResponse = ({
+  message,
+  onTrain,
+}: {
+  message: Message;
+  onTrain: (generation: string, correction: string) => any;
+}) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [edited, setEdited] = useState<boolean>(false);
   const [content, setContent] = useState<string>(message.content);

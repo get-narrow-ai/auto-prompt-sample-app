@@ -6,23 +6,37 @@ import { useState } from "react";
 import AiResponse from "./components/ai-response";
 import { callImprovementApi, callTrainingApi } from "./clients/prompt-api";
 
+const formatPrompt = (input: string, context?: string, additional?: string) => {
+  return `${input}
+
+${additional ? additional : ""}
+
+${
+  context
+    ? `# CONTEXT:
+${context}`
+    : ""
+}`;
+};
+
 export default function Index() {
   const { messages, input, handleInputChange, append, setMessages, setInput } =
     useChat();
+  // Context added to prompt set up by user:
   const [context, setContext] = useState<string>("");
+  // Additions to prompt from training API:
+  const [additional, setAdditional] = useState<string>("");
 
   // Submit prompt to execute on the server:
-  const onPromptSubmit = (input: string, context?: string) => {
+  const onPromptSubmit = (
+    input: string,
+    context?: string,
+    additional?: string
+  ) => {
     if (!input.length) {
       return;
     }
-
-    const content = context
-      ? `${input}
-
-# CONTEXT:
-${context}`
-      : input;
+    const content = formatPrompt(input, context, additional);
 
     append({
       createdAt: new Date(),
@@ -32,16 +46,19 @@ ${context}`
   };
 
   // Call training API to improve prompt based on user correction:
-  const onTrain = async (generation: string, correction: string) => {
+  const onTrain = async (
+    generation: string,
+    correction: string
+  ): Promise<void> => {
     const trainingResponse = await callTrainingApi({
       prompt: input,
       context,
       generation,
       correction,
     });
-    setInput(trainingResponse.prompt);
     setMessages([]);
-    onPromptSubmit(trainingResponse.prompt, context);
+    setAdditional(trainingResponse.prompt);
+    onPromptSubmit(input, context, trainingResponse.prompt);
   };
 
   return (
@@ -77,7 +94,7 @@ ${context}`
           className="mt-4 hover:cursor-pointer"
           onClick={() => {
             setMessages([]);
-            onPromptSubmit(input, context);
+            onPromptSubmit(input, context, additional);
           }}
         >
           Test
@@ -94,6 +111,23 @@ ${context}`
         >
           Improve
         </Button>
+        {additional && (
+          <Button
+            radius="sm"
+            size="sm"
+            variant="bordered"
+            isDisabled={!input.length}
+            className="mt-4 ml-2 hover:cursor-pointer"
+            onClick={() => {
+              // Copy to clipboard:
+              navigator.clipboard.writeText(
+                formatPrompt(input, context, additional)
+              );
+            }}
+          >
+            Copy
+          </Button>
+        )}
       </form>
       {/* Show response and allow user to train by editing it */}
       <div className="mt-4">
