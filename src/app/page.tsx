@@ -2,16 +2,14 @@
 
 import { useChat } from "ai/react";
 import { Textarea, Button } from "@nextui-org/react";
-import { useEffect, useRef, useState } from "react";
-import AiResponse from "./AiResponse";
-import UserMessage from "./UserMessage";
-import { callImprovementApi, callTrainingApi } from "./apiClient";
+import { useState } from "react";
+import AiResponse from "./components/ai-response";
+import { callImprovementApi, callTrainingApi } from "./clients/prompt-api";
 
 export default function Index() {
-  const [context, setContext] = useState("");
-
   const { messages, input, handleInputChange, append, setMessages, setInput } =
     useChat();
+  const [context, setContext] = useState<string>("");
 
   // Submit prompt to execute on the server:
   const onPromptSubmit = (input: string, context?: string) => {
@@ -33,45 +31,18 @@ ${context}`
     });
   };
 
+  // Call training API to improve prompt based on user correction:
   const onTrain = async (generation: string, correction: string) => {
-    const response = await callTrainingApi({
+    const trainingResponse = await callTrainingApi({
       prompt: input,
       context,
       generation,
       correction,
     });
-    setInput(response.prompt[0].content);
+    setInput(trainingResponse.prompt);
     setMessages([]);
-    onPromptSubmit(response.prompt[0].content, context);
+    onPromptSubmit(trainingResponse.prompt, context);
   };
-
-  // Use a ref to store the state of the chat so that it can be accessed within our useEffect hook:
-  const stateRef = useRef<{ input: string; messages: any[]; context: string }>({
-    input,
-    messages,
-    context,
-  });
-  useEffect(() => {
-    stateRef.current = {
-      input,
-      messages,
-      context,
-    };
-  }, [input, messages, context]);
-
-  // Listen for the enter key to submit the prompt:
-  useEffect(() => {
-    const onKeypress = (e: KeyboardEvent) => {
-      const { messages, input } = stateRef.current;
-      if (e.key === "Enter" && messages.length === 0 && input) {
-        e.preventDefault();
-        onPromptSubmit(input, context);
-      }
-    };
-
-    // window.addEventListener("keypress", onKeypress);
-    return () => window.removeEventListener("keypress", onKeypress);
-  }, []);
 
   return (
     <div className="flex flex-col w-full max-w-2xl py-24 mx-auto">
@@ -80,6 +51,7 @@ ${context}`
         Use the fields below to provide a task and context to our system.
       </p>
 
+      {/* Form to collect initial prompt and context example, and allow auto-improvement */}
       <form className="mt-4 w-full">
         <h2 className="font-bold text-sm">Setup</h2>
         <Textarea
@@ -123,6 +95,7 @@ ${context}`
           Improve
         </Button>
       </form>
+      {/* Show response and allow user to train by editing it */}
       <div className="mt-4">
         {messages.length ? (
           <h2 className="font-bold text-sm">Response</h2>
