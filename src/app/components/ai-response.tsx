@@ -1,4 +1,11 @@
-import { Button, Card, CardBody, CardFooter, Divider } from "@nextui-org/react";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  Divider,
+  Spinner,
+} from "@nextui-org/react";
 import { useState, useCallback } from "react";
 
 const AiResponse = ({ message, onTrain }: any) => {
@@ -65,8 +72,9 @@ const AiResponse = ({ message, onTrain }: any) => {
           </Button>
         )}
         {edited && (
-          <p className="text-xs text-green-500 font-bold">
-            Trained new prompt via edit!
+          <p className="text-xs text-green-500 font-bold align-middle">
+            <Spinner size="sm" color="success" className="mr-2 align-middle" />
+            Training new prompt via edit!
           </p>
         )}
       </CardFooter>
