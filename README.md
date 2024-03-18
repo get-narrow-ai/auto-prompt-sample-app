@@ -1,5 +1,7 @@
 # Auto Prompt Sample App
 
+[Watch our video demo here](https://streamable.com/aee9v2)!
+
 ## Set-up and running the application
 
 ### .env.local file
