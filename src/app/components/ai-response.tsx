@@ -36,6 +36,7 @@ const AiResponse = ({
         <p
           contentEditable={isEditing}
           onBlur={(e: any) => setContent(e.target.textContent || "")}
+          className="p-2"
         >
           {content}
         </p>
