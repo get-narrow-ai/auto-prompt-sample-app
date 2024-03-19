@@ -8,6 +8,8 @@ import { callImprovementApi, callTrainingApi } from "./clients/prompt-api";
 import { formatPrompt } from "./utils/prompt";
 import GitHubSvg from "./svgs/github";
 import EmailExample from "./examples/email";
+import LinkedInExample from "./examples/linkedin";
+import TweetExample from "./examples/tweet";
 
 export default function Index() {
   const { messages, input, handleInputChange, append, setMessages, setInput } =
@@ -111,7 +113,31 @@ export default function Index() {
                   setContext(EmailExample.context);
                 }}
               >
-                Cold Emails
+                Write me a cold sales email
+              </Button>
+              <Button
+                radius="sm"
+                size="sm"
+                variant="bordered"
+                className="mt-2 ml-2"
+                onClick={() => {
+                  setInput(LinkedInExample.prompt);
+                  setContext(LinkedInExample.context);
+                }}
+              >
+                Write me a LinkedIn post to market a blog post
+              </Button>
+              <Button
+                radius="sm"
+                size="sm"
+                variant="bordered"
+                className="mt-2"
+                onClick={() => {
+                  setInput(TweetExample.prompt);
+                  setContext(TweetExample.context);
+                }}
+              >
+                Write me a Tweet to market a blog post
               </Button>
             </div>
           </>

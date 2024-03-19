@@ -10,9 +10,12 @@ export const runtime = "edge";
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
+  // Heuristic to choose model, gpt-4 can only take 8k tokens in total:
+  const shouldUseLargerContextModel = messages[0].content.length > 12000;
+
   // Ask OpenAI for a streaming chat completion given the prompt
   const response = await openai.chat.completions.create({
-    model: "gpt-4",
+    model: shouldUseLargerContextModel ? "gpt-4-1106-preview" : "gpt-4",
     stream: true,
     messages,
   });
