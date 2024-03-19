@@ -7,6 +7,7 @@ import AiResponse from "./components/ai-response";
 import { callImprovementApi, callTrainingApi } from "./clients/prompt-api";
 import { formatPrompt } from "./utils/prompt";
 import GitHubSvg from "./svgs/github";
+import EmailExample from "./examples/email";
 
 export default function Index() {
   const { messages, input, handleInputChange, append, setMessages, setInput } =
@@ -93,46 +94,75 @@ export default function Index() {
           placeholder="Give an example of the context you would use"
           onChange={(e) => setContext(e.target.value)}
         />
-        <Button
-          radius="sm"
-          size="sm"
-          isDisabled={!input.length}
-          className="mt-4 hover:cursor-pointer"
-          onClick={() => {
-            setMessages([]);
-            onPromptSubmit(input, context, additional);
-          }}
-        >
-          Test
-        </Button>
-        <Button
-          radius="sm"
-          size="sm"
-          variant="bordered"
-          isDisabled={!input.length}
-          className="mt-4 ml-2 hover:cursor-pointer"
-          onClick={() => {
-            callImprovementApi({ prompt: input, context, setPrompt: setInput });
-          }}
-        >
-          Improve
-        </Button>
-        {additional && (
-          <Button
-            radius="sm"
-            size="sm"
-            variant="bordered"
-            isDisabled={!input.length}
-            className="mt-4 ml-2 hover:cursor-pointer"
-            onClick={() => {
-              // Copy full prompt to clipboard:
-              navigator.clipboard.writeText(
-                formatPrompt(input, context, additional)
-              );
-            }}
-          >
-            Copy
-          </Button>
+
+        {!input.length ? (
+          <>
+            <div>
+              <p className="text-xs text-slate-500 mt-4">
+                Or choose one of our sample datasets:
+              </p>
+              <Button
+                radius="sm"
+                size="sm"
+                variant="bordered"
+                className="mt-2"
+                onClick={() => {
+                  setInput(EmailExample.prompt);
+                  setContext(EmailExample.context);
+                }}
+              >
+                Cold Emails
+              </Button>
+            </div>
+          </>
+        ) : (
+          <>
+            <Button
+              radius="sm"
+              size="sm"
+              isDisabled={!input.length}
+              className="mt-4 hover:cursor-pointer"
+              onClick={() => {
+                setMessages([]);
+                onPromptSubmit(input, context, additional);
+              }}
+            >
+              Test
+            </Button>
+            <Button
+              radius="sm"
+              size="sm"
+              variant="bordered"
+              isDisabled={!input.length}
+              className="mt-4 ml-2 hover:cursor-pointer"
+              onClick={() => {
+                callImprovementApi({
+                  prompt: input,
+                  context,
+                  setPrompt: setInput,
+                });
+              }}
+            >
+              Improve
+            </Button>
+            {additional && (
+              <Button
+                radius="sm"
+                size="sm"
+                variant="bordered"
+                isDisabled={!input.length}
+                className="mt-4 ml-2 hover:cursor-pointer"
+                onClick={() => {
+                  // Copy full prompt to clipboard:
+                  navigator.clipboard.writeText(
+                    formatPrompt(input, context, additional)
+                  );
+                }}
+              >
+                Copy
+              </Button>
+            )}
+          </>
         )}
       </form>
       {/* Show response and allow user to train by editing it */}
