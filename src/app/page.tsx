@@ -10,6 +10,7 @@ import GitHubSvg from "./svgs/github";
 import EmailExample from "./examples/email";
 import LinkedInExample from "./examples/linkedin";
 import TweetExample from "./examples/tweet";
+import SummaryExample from "./examples/summary";
 
 export default function Index() {
   const { messages, input, handleInputChange, append, setMessages, setInput } =
@@ -138,6 +139,18 @@ export default function Index() {
                 }}
               >
                 Write me a Tweet to market a blog post
+              </Button>
+              <Button
+                radius="sm"
+                size="sm"
+                variant="bordered"
+                className="mt-2 ml-2"
+                onClick={() => {
+                  setInput(SummaryExample.prompt);
+                  setContext(SummaryExample.context);
+                }}
+              >
+                Summarize this blog post
               </Button>
             </div>
           </>
