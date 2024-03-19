@@ -5,19 +5,7 @@ import { Textarea, Button } from "@nextui-org/react";
 import { useState } from "react";
 import AiResponse from "./components/ai-response";
 import { callImprovementApi, callTrainingApi } from "./clients/prompt-api";
-
-const formatPrompt = (input: string, context?: string, additional?: string) => {
-  return `${input}
-
-${additional ? additional : ""}
-
-${
-  context
-    ? `# CONTEXT:
-${context}`
-    : ""
-}`;
-};
+import { formatPrompt } from "./utils/prompt";
 
 export default function Index() {
   const { messages, input, handleInputChange, append, setMessages, setInput } =
@@ -29,15 +17,18 @@ export default function Index() {
 
   // Submit prompt to execute on the server:
   const onPromptSubmit = (
-    input: string,
+    prompt: string,
     context?: string,
     additional?: string
-  ) => {
-    if (!input.length) {
+  ): void => {
+    // Do not call the server if there is no prompt:
+    if (!prompt.length) {
       return;
     }
-    const content = formatPrompt(input, context, additional);
+    const content = formatPrompt(prompt, context, additional);
 
+    // "Append" is the "ai/react" method to add a new message to the prompt
+    // and call the API for a response:
     append({
       createdAt: new Date(),
       role: "user",
@@ -56,8 +47,13 @@ export default function Index() {
       generation,
       correction,
     });
-    setMessages([]);
+    // Store training information for use in the prompt:
     setAdditional(trainingResponse.prompt);
+
+    // Clear previous messages:
+    setMessages([]);
+
+    // Submit new version of the prompt:
     onPromptSubmit(input, context, trainingResponse.prompt);
   };
 
@@ -119,7 +115,7 @@ export default function Index() {
             isDisabled={!input.length}
             className="mt-4 ml-2 hover:cursor-pointer"
             onClick={() => {
-              // Copy to clipboard:
+              // Copy full prompt to clipboard:
               navigator.clipboard.writeText(
                 formatPrompt(input, context, additional)
               );
