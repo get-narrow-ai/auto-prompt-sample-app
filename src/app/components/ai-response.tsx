@@ -5,6 +5,7 @@ import {
   CardFooter,
   Divider,
   Spinner,
+  Skeleton,
 } from "@nextui-org/react";
 import { Message } from "ai/react";
 import { useState, useCallback } from "react";
@@ -29,6 +30,29 @@ const AiResponse = ({
       onTrain(message.content, content);
     }
   }, [isEditing, content]);
+
+  if (!content.length) {
+    return (
+      <Card key={message.id} className="whitespace-pre-wrap mt-2">
+        <CardBody>
+          <Skeleton className="rounded-lg">
+            <p>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+              Voluptate aut quia est qui cupiditate magnam laboriosam atque non.
+              Eaque quod, fugit minus voluptate praesentium quia nemo optio
+              libero quae exercitationem.
+            </p>
+          </Skeleton>
+        </CardBody>
+        <Divider />
+        <CardFooter className="flex justify-between">
+          <p className="text-xs">
+            {"LLM"} - {message.createdAt?.toLocaleString() || "now"}
+          </p>
+        </CardFooter>
+      </Card>
+    );
+  }
 
   return (
     <Card key={message.id} className="whitespace-pre-wrap mt-2">

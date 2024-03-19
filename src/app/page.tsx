@@ -130,6 +130,16 @@ export default function Index() {
         {messages.length ? (
           <h2 className="font-bold text-sm">Response</h2>
         ) : null}
+        {messages.length === 1 ? (
+          <AiResponse
+            message={{
+              id: "skeleton",
+              role: "assistant",
+              content: "",
+            }}
+            onTrain={onTrain}
+          />
+        ) : null}
         {messages.map((m) =>
           m.role === "user" ? null : (
             <AiResponse key={m.content} message={m} onTrain={onTrain} />
