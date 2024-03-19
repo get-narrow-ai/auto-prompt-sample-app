@@ -2,6 +2,8 @@
 
 [Watch our video demo here](https://streamable.com/aee9v2)!
 
+[Book a demo](https://calendly.com/paul-codethread/narrow-ai-user-research) to get API access.
+
 ## Set-up and running the application
 
 ### .env.local file
