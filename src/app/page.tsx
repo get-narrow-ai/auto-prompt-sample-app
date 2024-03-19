@@ -6,6 +6,7 @@ import { useState } from "react";
 import AiResponse from "./components/ai-response";
 import { callImprovementApi, callTrainingApi } from "./clients/prompt-api";
 import { formatPrompt } from "./utils/prompt";
+import GitHubSvg from "./svgs/github";
 
 export default function Index() {
   const { messages, input, handleInputChange, append, setMessages, setInput } =
@@ -59,7 +60,16 @@ export default function Index() {
 
   return (
     <div className="flex flex-col w-full max-w-2xl py-24 mx-auto">
-      <h1 className="font-bold text-xl">Auto-Prompt Sample Application</h1>
+      <div className="flex items-center justify-left gap-2">
+        <h1 className="font-bold text-xl">Auto-Prompt Sample Application</h1>
+        <a
+          href="https://github.com/CodeThread-ai/auto-prompt-sample-app"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <GitHubSvg />
+        </a>
+      </div>
       <p className="text-sm">
         Use the fields below to provide a task and context to our system.
       </p>
