@@ -9,8 +9,13 @@
 The application will required the following information in an .env.local file before running it locally:
 
 ```
+# Your organizations secret:
 OPENAI_API_KEY=<YOUR OPENAI KEY>
+
+# The below will be given to you by the CodeThread team upon technical evaluation:
 NEXT_PUBLIC_CODETHREAD_KEY=<YOUR_CODETHREAD_KEY>
+NEXT_PUBLIC_IMPROVE_API_URL=<YOUR_CODETHREAD_ENDPOINT>
+NEXT_PUBLIC_TRAINING_API_URL=<YOUR_CODETHREAD_ENDPOINT>
 ```
 
 If you are interested in trying out our API, please contact howard@codethread.ai for more information on procuring an API key for testing.
