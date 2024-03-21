@@ -85,7 +85,7 @@ export default function Index() {
           isRequired
           value={input}
           label="Prompt"
-          maxRows={Infinity}
+          maxRows={input?.length ? Infinity : 2}
           placeholder="What do you want to do?"
           className="mt-2"
           onChange={handleInputChange}
@@ -93,6 +93,7 @@ export default function Index() {
         <Textarea
           className="mt-4 border-gray-200 focus:border-[#3170f9]"
           value={context}
+          maxRows={context?.length ? 8 : 2}
           label="Context"
           placeholder="Give an example of the context you would use"
           onChange={(e) => setContext(e.target.value)}
