@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.19.0",
     "@nextui-org/react": "^2.2.10",
     "ai": "^3.0.9",
     "framer-motion": "^11.0.12",
