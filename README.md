@@ -11,7 +11,11 @@
 The application will required the following information in an .env.local file before running it locally:
 
 ```
-# Your organizations secret:
+# Your organizations secrets:
+
+# Add Anthropic key to use Claude (1st priority):
+ANTHROPIC_API_KEY=<YOUR ANTHROPIC KEY>
+# Add OpenAI key to use OpenAI:
 OPENAI_API_KEY=<YOUR OPENAI KEY>
 
 # The below will be given to you by the CodeThread team upon technical evaluation:
