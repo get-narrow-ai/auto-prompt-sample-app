@@ -8,14 +8,16 @@
 
 ### .env.local file
 
-The application will required the following information in an .env.local file before running it locally:
+The application will require the following information in an .env.local file before running it locally:
 
 ```
-# Your organizations secrets:
+# Your organizations config / secrets:
 
-# Add Anthropic key to use Claude (1st priority):
+# Select your preferred LLM provider:
+NEXT_PUBLIC_LLM_PROVIDER=<'openai' | 'anthropic'>
+# Add Anthropic key if using Anthropic:
 ANTHROPIC_API_KEY=<YOUR ANTHROPIC KEY>
-# Add OpenAI key to use OpenAI:
+# Add OpenAI key if using OpenAI:
 OPENAI_API_KEY=<YOUR OPENAI KEY>
 
 # The below will be given to you by the CodeThread team upon technical evaluation:
