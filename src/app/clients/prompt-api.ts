@@ -1,3 +1,8 @@
+const selectedModel =
+  process.env.NEXT_PUBLIC_LLM_PROVIDER === "anthropic"
+    ? "claude-3-opus"
+    : "gpt-4-turbo-2024-04-09";
+
 export const callImprovementApi = async ({
   prompt,
   context,
@@ -13,7 +18,11 @@ export const callImprovementApi = async ({
       Authorization: `Bearer ${process.env.NEXT_PUBLIC_CODETHREAD_KEY}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ prompt, context }),
+    body: JSON.stringify({
+      prompt,
+      context,
+      model: selectedModel,
+    }),
   });
   let content = "";
   const decoder = new TextDecoder();
@@ -45,7 +54,13 @@ export const callTrainingApi = async ({
       Authorization: `Bearer ${process.env.NEXT_PUBLIC_CODETHREAD_KEY}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ prompt, context, generation, correction }),
+    body: JSON.stringify({
+      prompt,
+      context,
+      generation,
+      correction,
+      model: selectedModel,
+    }),
   });
   return response.json();
 };
