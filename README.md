@@ -63,13 +63,13 @@ Outputs a streaming response which contains the improved prompt.
 Expected input fields:
 
 ```
-    {
-        prompt: string, // Original prompt
-        context: string, // Context provided to the prompt (input variables)
-        generation: string, // Initial prompt generation
-        correction: string, // User corrected output
-        model: string, // Model name
-    }
+{
+    prompt: string, // Original prompt
+    context: string, // Context provided to the prompt (input variables)
+    generation: string, // Initial prompt generation
+    correction: string, // User corrected output
+    model: string, // Model name
+}
 ```
 
 Outputs a prompt string which can be appended to the original prompt to align it with the desired user outcome.
