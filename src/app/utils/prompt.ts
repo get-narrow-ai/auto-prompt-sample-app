@@ -6,7 +6,7 @@ export const formatPrompt = (
 ): string => {
   return `${input}
 
-${additional ? additional : ""}
+${additional ? `${additional}` : ""}
 
 ${
   context

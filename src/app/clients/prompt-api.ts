@@ -12,18 +12,21 @@ export const callImprovementApi = async ({
   context: string;
   setPrompt: (newPrompt: string) => void;
 }) => {
-  const response = await fetch(process.env.NEXT_PUBLIC_IMPROVE_API_URL || "", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.NEXT_PUBLIC_CODETHREAD_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      prompt,
-      context,
-      model: selectedModel,
-    }),
-  });
+  const response = await fetch(
+    process.env.NEXT_PUBLIC_API_BASE_URL + "/content/prompt",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_CODETHREAD_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt,
+        context,
+        model: selectedModel,
+      }),
+    }
+  );
   let content = "";
   const decoder = new TextDecoder();
   const reader = response.body!.getReader();
@@ -48,19 +51,22 @@ export const callTrainingApi = async ({
   generation: string;
   correction: string;
 }) => {
-  const response = await fetch(process.env.NEXT_PUBLIC_TRAINING_API_URL || "", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.NEXT_PUBLIC_CODETHREAD_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      prompt,
-      context,
-      generation,
-      correction,
-      model: selectedModel,
-    }),
-  });
+  const response = await fetch(
+    process.env.NEXT_PUBLIC_API_BASE_URL + "/content/prompt/training",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_CODETHREAD_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt,
+        context,
+        generation,
+        correction,
+        model: selectedModel,
+      }),
+    }
+  );
   return response.json();
 };
