@@ -1,6 +1,6 @@
 const selectedModel =
   process.env.NEXT_PUBLIC_LLM_PROVIDER === "anthropic"
-    ? "claude-3-opus"
+    ? "claude-3-opus-20240229"
     : "gpt-4-turbo-2024-04-09";
 
 export const callImprovementApi = async ({
