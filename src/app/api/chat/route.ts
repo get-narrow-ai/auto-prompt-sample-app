@@ -19,6 +19,7 @@ export async function POST(req: Request) {
     const stream = await anthropic.messages.create({
       messages,
       model: "claude-3-opus-20240229",
+      temperature: 0.3,
       max_tokens: 2048,
       stream: true,
     });
@@ -35,6 +36,7 @@ export async function POST(req: Request) {
     // Ask OpenAI for a streaming chat completion given the prompt:
     const response = await openai.chat.completions.create({
       model: "gpt-4-turbo-2024-04-09",
+      temperature: 0.3,
       stream: true,
       messages,
     });
