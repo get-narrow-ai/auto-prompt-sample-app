@@ -14,23 +14,26 @@ import WandSvg from "../svgs/wand";
 const AiResponse = ({
   message,
   onTrain,
+  isEditingGeneration,
+  setIsEditingGeneration,
 }: {
   message: Message;
   onTrain: (generation: string, correction: string) => any;
+  isEditingGeneration: boolean;
+  setIsEditingGeneration: (editing: boolean) => void;
 }) => {
-  const [isEditing, setIsEditing] = useState<boolean>(false);
   const [edited, setEdited] = useState<boolean>(false);
   const [content, setContent] = useState<string>(message.content);
 
   const onClick = useCallback(() => {
-    if (!isEditing) {
-      setIsEditing(true);
+    if (!isEditingGeneration) {
+      setIsEditingGeneration(true);
     } else {
-      setIsEditing(false);
+      setIsEditingGeneration(false);
       setEdited(true);
       onTrain(message.content, content);
     }
-  }, [isEditing, content]);
+  }, [isEditingGeneration, content]);
 
   if (!content.length) {
     return (
@@ -59,7 +62,7 @@ const AiResponse = ({
     <Card key={message.id} className="whitespace-pre-wrap mt-2">
       <CardBody>
         <p
-          contentEditable={isEditing}
+          contentEditable={isEditingGeneration}
           onBlur={(e: any) => setContent(e.target.textContent || "")}
           className="p-2"
         >
@@ -77,9 +80,9 @@ const AiResponse = ({
             size="sm"
             className="ml-auto hover:cursor-pointer"
             onClick={onClick}
-            endContent={isEditing ? null : <WandSvg />}
+            endContent={isEditingGeneration ? null : <WandSvg />}
           >
-            {isEditing ? "Submit" : "Fix Response"}
+            {isEditingGeneration ? "Submit" : "Fix Response"}
           </Button>
         )}
         {edited && (

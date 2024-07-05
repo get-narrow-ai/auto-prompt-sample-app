@@ -15,6 +15,11 @@ import SummaryExample from "./examples/summary";
 export default function Index() {
   const { messages, input, handleInputChange, append, setMessages, setInput } =
     useChat();
+
+  // Component state for if the user is currently editing the prompt:
+  const [isEditingGeneration, setIsEditingGeneration] = useState(false);
+  // Component state for if the user has improved the prompt via API:
+  const [promptHasBeenImproved, setPromptHasBeenImproved] = useState(false);
   // Context added to prompt set up by user:
   const [context, setContext] = useState<string>("");
   // Additions to prompt from training API:
@@ -163,27 +168,26 @@ export default function Index() {
               isDisabled={!input.length}
               className="mt-4 hover:cursor-pointer"
               onClick={() => {
-                setMessages([]);
-                onPromptSubmit(input, context, additional);
+                const runImprovementProcess = async () => {
+                  await callImprovementApi({
+                    prompt: input,
+                    context,
+                    setPrompt: setInput,
+                  });
+                  setMessages([]);
+                  onPromptSubmit(input, context, additional);
+                  setPromptHasBeenImproved(true);
+                };
+                if (!promptHasBeenImproved) {
+                  runImprovementProcess();
+                } else if (isEditingGeneration) {
+                } else {
+                  setMessages([]);
+                  onPromptSubmit(input, context, additional);
+                }
               }}
             >
-              Test
-            </Button>
-            <Button
-              radius="sm"
-              size="sm"
-              variant="bordered"
-              isDisabled={!input.length}
-              className="mt-4 ml-2 hover:cursor-pointer"
-              onClick={() => {
-                callImprovementApi({
-                  prompt: input,
-                  context,
-                  setPrompt: setInput,
-                });
-              }}
-            >
-              Improve
+              Generate
             </Button>
             {additional && (
               <Button
@@ -212,6 +216,8 @@ export default function Index() {
         ) : null}
         {messages.length === 1 ? (
           <AiResponse
+            isEditingGeneration={isEditingGeneration}
+            setIsEditingGeneration={setIsEditingGeneration}
             message={{
               id: "skeleton",
               role: "assistant",
@@ -222,7 +228,13 @@ export default function Index() {
         ) : null}
         {messages.map((m) =>
           m.role === "user" ? null : (
-            <AiResponse key={m.content} message={m} onTrain={onTrain} />
+            <AiResponse
+              key={m.content}
+              message={m}
+              onTrain={onTrain}
+              isEditingGeneration={isEditingGeneration}
+              setIsEditingGeneration={setIsEditingGeneration}
+            />
           )
         )}
       </div>
